@@ -1,0 +1,629 @@
+<div id="performance-tilelayout"></div>
+
+
+<!-- container gauges templates -->
+<script id="monthly-sales-template" type="text/x-kendo-template">
+</script>
+
+<!-- container chart templates -->
+<script id="performance-template" type="text/x-kendo-template">
+  <div style="display: flex;flex-direction: column;    align-items: end;    padding: 30px;">
+    <div class="classEx1" style=" width: 100%;"">
+      <div style="margin: auto;"><h1 style="margin: auto;    display: table;">Balance</h1></div>
+      <input id="slider" class="balSlider" title="slider" style=" width: 100%;   height: 20px;" />
+    </div>
+    <div class="classEx2" style=" width: 100%;">
+      <div style="margin: auto;"><h1 style="margin: auto;    display: table;">Support</h1></div>
+      <input id="slider2" class="balSlider" title="slider" style="  width: 100%;  height: 20px;" />
+    </div>
+  </div>
+</script>
+<script id="weightChart2T" type="text/x-kendo-template">
+  <div class="demo-section2 wide" >
+    <div id="weightChart2"></div>
+    
+  </div>
+</script>
+<script id="chartT" type="text/x-kendo-template">
+  <div class="demo-section2 wide" >
+    <div id="chart"></div>
+    
+  </div>
+</script>
+<script id="cost-template" type="text/x-kendo-template">
+  <div id="cost-pie-chart" style="height:100%; width:100%"></div>
+</script>
+<script id="europe-template" type="text/x-kendo-template">
+  <div id="europe-chart" style="height:100%; width:100%"></div>
+</script>
+<script id="global-template" type="text/x-kendo-template">
+  <div id="global-chart" style="height:100%; width:100%"></div>
+</script>
+<style>
+  #myProject{
+    overflow-y: scroll;
+  }
+  #myProject .k-slider-track{
+    height: 20px;
+    background-color: red;
+  }
+  .k-slider .k-draghandle{
+    border-color: #333333;
+    border-width: 1.5px;
+    color: white;
+    background-color: #cacaca;
+    border-radius: 3px;
+    width: 10px;
+    height: 23px;
+    transition: left 0.6s ease;
+  }
+  .k-slider .k-slider-selection{
+    background-color: #ff635800;
+    transition: width 0.6s ease;
+
+  }
+  #myProject .classEx1 .k-slider-track{
+    background: linear-gradient(to left,rgb(181 31 38),rgb(86 153 66))
+  }
+  #myProject .classEx2 .k-slider-track{
+    background: linear-gradient(to left,rgb(41 109 175),rgb(243 161 51))
+  }
+  .demo-section{
+    margin: 18px;
+    padding:1em;
+  }
+  #myProject .k-slider-horizontal{
+    align-items: end; 
+  }
+  #myProject .k-tick{
+    display: none;
+  }
+  
+</style>
+<script>
+var tilelayout = $("#performance-tilelayout").kendoTileLayout({
+    resize: onTileResize,
+    columns: 6,
+    // height: "100%",
+    columnsWidth: "20%",
+    containers: [
+      {
+        bodyTemplate: kendo.template($("#weightChart2T").html()),
+        colSpan: 6,
+        header: {
+          template: "<span class=k-card-title>Last training - Balance Graph</span><a class='contextMenuButton'><span style='float:right; margin:5px 15px 0px 0px; color:\\#656565;' class='k-icon k-i-more-vertical'></span></a>"
+        },
+        rowSpan: 2
+      },
+      {
+        bodyTemplate: kendo.template($("#chartT").html()),
+        colSpan: 6,
+        header: {
+          template: "<span class=k-card-title>Weight Distribution</span><a class='contextMenuButton'><span style='float:right; margin:5px 15px 0px 0px; color:\\#656565;' class='k-icon k-i-more-vertical'></span></a>"
+        },
+        rowSpan: 2
+      },
+      {
+        bodyTemplate: kendo.template($("#performance-template").html()),
+        colSpan: 6,
+        header: {
+          template: "<span class=k-card-title>Live Performance</span><a class='contextMenuButton'><span style='float:right; margin:5px 15px 0px 0px; color:\\#656565;' class='k-icon k-i-more-vertical'></span></a>"
+        },
+        rowSpan: 1
+      },
+    ],
+    reorderable: true,
+    resizable: false,
+    rowsHeight: "250px"
+  }).data("kendoTileLayout");
+
+  function createWidgets() {
+  function createChartV2(){
+            let numbers = [];
+
+        for (let i = 0; i <= 100; i++) {
+            if (i === 0) {
+                numbers.push(0);
+            } else if (i <= 23) {
+                numbers.push(Math.floor((20 / 23) * i));
+            } else if (i <= 50) {
+                numbers.push(Math.floor((50 / 27) * (i - 23)) + 20);
+            } else if (i <= 70) {
+                numbers.push(Math.floor((-40 / 20) * (i - 50)) + 50);
+            } else if (i <= 100) {
+                numbers.push(Math.floor((-70 / 30) * (i - 70)) + 70);
+            }
+        }
+        var data = [
+            { step: 0, leftLeg: 30, rightLeg: 20, personWeight: 70 },
+            { step: 1, leftLeg: 35, rightLeg: 25, personWeight: 70 },
+            { step: 2, leftLeg: 40, rightLeg: 30, personWeight: 70 },
+            { step: 3, leftLeg: 38, rightLeg: 28, personWeight: 70 },
+            { step: 4, leftLeg: 32, rightLeg: 22, personWeight: 70 },
+            // { step: 5, leftLeg: null, rightLeg: null, personWeight: 70 }
+        ];
+        numbers = [];
+        data = []
+        for (let i = 0; i <= 100; i++) {
+            let val =0
+            if (i === 0) {
+                val=0
+                numbers.push(0);
+            } else if (i <= 23) {
+                val = Math.floor((20 / 23) * i)
+                numbers.push();
+            } else if (i <= 50) {
+                val = Math.floor((50 / 27) * (i - 23)) + 20
+                numbers.push();
+            } else if (i <= 70) {
+                val = Math.floor((-40 / 20) * (i - 50)) + 50
+                numbers.push();
+            } else  {
+                val = Math.floor((-70 / 30) * (i - 70)) + 70
+                numbers.push();
+            } 
+            data.push({ step: i, leftLeg: val, rightLeg: (1*((Math.random() + 0.1)%1)*(70-val)), personWeight: 70 })
+        }
+        data =data.sort((x,y)=>{
+            if(x.step==y.step)
+                return 0;
+            return x.step>y.step? 1:-1
+            })
+        data = data.slice(0,101)
+        data = data.filter(x=>{return x.step%15 == 0||x.step==100});
+        var dataLeft=data.map(x=>{
+            return [x.step,x.leftLeg]
+        })
+        var dataRight=data.map(x=>{
+            return [x.step,x.rightLeg]
+        })
+        var databody=data.map(x=>{
+            return [x.step,x.personWeight]
+        })
+        var totalForce=data.map(x=>{
+            if(x.leftLeg===undefined||x.rightLeg===undefined)
+                return [x.step,null]
+            if(x.leftLeg===null&&x.rightLeg===null)
+                return [x.step,null]
+            else
+                return [x.step,x.leftLeg + x.rightLeg]
+        })
+       
+        $("#weightChart2").kendoChart({
+            title:'Hand/Body Weight Power Cycle - 30 Minutes Training session ',
+            seriesDefaults: {
+                type: "scatterLine",
+                style: "smooth",
+                bullet: false
+                
+            },
+            series: [
+                {data:totalForce, name: "Total Force", color: "rgb(54, 162, 98)" },
+                {data:dataLeft, name: "Left Hand", color: "rgb(54, 162, 235)" },
+                { data:dataRight,name: "Right Hand", color: "rgb(255, 99, 132)" },
+                { data:databody,name: "Body Weight", color: "rgb(75, 99, 132)",markers: {
+                visible: false }, } 
+            ],
+            xAxis:{
+                title:{
+                    text: "Time pass \"Cycle of Hand's Movement\"",
+                    background: "",
+                    border: {
+                        width: 0,
+                    }
+                },
+                labels: {
+                template: "#: value #"
+                },
+                
+            },
+            yAxis:{
+                labels: {
+                template: "#:  value #"
+                },
+                title:{
+                    text: "(Weight N)/(g)", 
+                    background: "",
+                    border: {
+                        width: 0,
+                    }
+                },
+            },
+            categoryAxis: {
+                field: "step",
+                title: { text: "Cycle of Leg Movement" },
+                min: 0, 
+                max:50
+            },
+            legend: {
+                position: "right"
+            }
+        });
+        }
+
+        createChartV2()
+        var slider = $("#slider").kendoSlider({
+        showButtons:false,
+        value:30,
+        width:400,
+ min: 0,
+ max: 100,
+
+}).data("kendoSlider");
+var slider = $("#slider2").kendoSlider({
+  showButtons:false,
+        value:50,
+ min: 0,
+ max: 100,
+
+}).data("kendoSlider");
+        var stats = [
+            { value: 30, date: new Date("Tue Aug 29 2023 17:05:48") },
+            { value: 50, date: new Date("Tue Aug 29 2023 17:05:48") },
+            { value: 45, date: new Date("Tue Aug 29 2023 17:05:48") },
+            { value: 40, date: new Date("Tue Aug 29 2023 17:05:48") },
+            { value: 35, date: new Date("Tue Aug 29 2023 17:05:48") },
+            { value: 40, date: new Date("Tue Aug 29 2023 17:05:48") },
+            { value: 42, date: new Date("Tue Aug 29 2023 17:05:48") },
+            { value: 40, date: new Date("Tue Aug 29 2023 17:05:48") },
+            { value: 35, date: new Date("Tue Aug 29 2023 17:05:48") },
+            { value: 43, date: new Date("Tue Aug 29 2023 17:05:48") },
+            { value: 38, date: new Date("Tue Aug 29 2023 17:05:48") },
+            { value: 30, date: new Date("Tue Aug 29 2023 17:05:48") },
+            { value: 48, date: new Date("Tue Aug 29 2023 17:05:48") },
+            { value: 50, date: new Date("Tue Aug 29 2023 17:05:48") },
+            { value: 55, date: new Date("Tue Aug 29 2023 17:05:48") },
+            { value: 35, date: new Date("Tue Aug 29 2023 17:05:48") },
+            { value: 30, date: new Date("Tue Aug 29 2023 17:05:48") }
+        ];
+        stats = [
+        {
+        "value": 30,
+        "date": 1
+    },
+    {
+        "value": 50,
+        "date": 2
+    },
+    {
+        "value": 45,
+        "date": 3
+    },
+    {
+        "value": 19,
+        "date": 4
+    },
+    {
+        "value": 25,
+        "date": 5
+    },
+    {
+        "value": 10,
+        "date": 6
+    },
+    {
+        "value": 42,
+        "date": 7
+    },
+    {
+        "value": 36,
+        "date": 8
+    },
+    {
+        "value": 31,
+        "date": 9
+    },
+    {
+        "value": 37,
+        "date": 10
+    },
+    {
+        "value": 28,
+        "date": 11
+    },
+    {
+        "value": 17,
+        "date": 12
+    },
+    {
+        "value": 28,
+        "date": 13
+    },
+    {
+        "value": 36,
+        "date": 14
+    },
+    {
+        "value": 44,
+        "date": 15
+    },
+    {
+        "value": 21,
+        "date": 16
+    },
+    {
+        "value": 19,
+        "date": 17
+    }
+]
+
+var stats2 = [
+    {
+        "value": 30,
+        "date": 1
+    },
+    {
+        "value": 50,
+        "date": 2
+    },
+    {
+        "value": 45,
+        "date": 3
+    },
+    {
+        "value": 40,
+        "date": 4
+    },
+    {
+        "value": 35,
+        "date": 5
+    },
+    {
+        "value": 40,
+        "date": 6
+    },
+    {
+        "value": 42,
+        "date": 7
+    },
+    {
+        "value": 40,
+        "date": 8
+    },
+    {
+        "value": 35,
+        "date": 9
+    },
+    {
+        "value": 43,
+        "date": 10
+    },
+    {
+        "value": 38,
+        "date": 11
+    },
+    {
+        "value": 30,
+        "date": 12
+    },
+    {
+        "value": 2,
+        "date": 13
+    },
+    {
+        "value": 50,
+        "date": 14
+    },
+    {
+        "value": 55,
+        "date": 15
+    },
+    {
+        "value": 35,
+        "date": 16
+    },
+    {
+        "value": 30,
+        "date": 17
+    }
+]
+var slider = $("#slider").kendoSlider({
+        showButtons: false,
+        value: 30,
+        width: 400,
+        min: 0,
+        max: 100,
+        tickPlacement: "none",
+        change: function(e) {
+          var value = e.value;
+          value=Math.floor(Math.random()*80)+1;
+        }
+      }).data("kendoSlider");
+
+
+function updateBalanceSlider() {
+  // Create a new XMLHttpRequest object
+  var xhr = new XMLHttpRequest();
+  // Configure the request (HTTP method and URL)
+  xhr.open("GET", "https://iot-lyart.vercel.app/Balance", true);
+  // Set up an event handler to handle the response
+  xhr.onreadystatechange = function () {
+    // Check if the request is complete
+    if (xhr.readyState === 4) {
+      // Check if the request was successful (status code 200)
+      if (xhr.status === 200) {
+        // Parse and use the response data (assuming it's JSON)
+        var responseData = JSON.parse(xhr.responseText);
+        console.log("The current Balance is:"+responseData);
+        // Assuming slider is a valid slider object
+        // Set the slider's value based on the responseData
+        if(responseData==0)
+            slider.value(45);
+        else
+          slider.value(45+45*responseData);
+      } else {
+        // Handle error cases
+        console.error("Request failed with status: " + xhr.status);
+      }
+    }
+  };
+
+  // Send the request
+  xhr.send();
+}
+
+function updateSupportSlider() {
+  // Create a new XMLHttpRequest object
+  var xhr = new XMLHttpRequest();
+  // Configure the request (HTTP method and URL)
+  xhr.open("GET", "https://iot-lyart.vercel.app/TotalWeight", true);
+  // Set up an event handler to handle the response
+  xhr.onreadystatechange = function () {
+    // Check if the request is complete
+    if (xhr.readyState === 4) {
+      // Check if the request was successful (status code 200)
+      if (xhr.status === 200) {
+        // Parse and use the response data (assuming it's JSON)
+        var responseData = JSON.parse(xhr.responseText);
+        console.log("The current Support is:"+responseData);
+        // Assuming slider is a valid slider object
+        // Set the slider's value based on the responseData
+        slider2.value(responseData);
+      } else {
+        // Handle error cases
+        console.error("Request failed with status: " + xhr.status);
+      }
+    }
+  };
+
+  // Send the request
+  xhr.send();
+}
+setInterval(updateBalanceSlider, 500);
+setInterval(updateSupportSlider, 10);
+      
+var slider2 = $("#slider2").kendoSlider({
+        showButtons: false,
+        value: 50,
+        min: 0,
+        max: 100,
+        tickPlacement: "none",
+        change: function(e) {
+          var value = e.value;
+          Math.floor(Math.random()*80)+1;
+        }
+      }).data("kendoSlider");
+function slideSliders() {
+        var interval = 1000; // Interval in milliseconds (10 seconds)
+        var balanceInterval = setInterval(function() {
+          var currentValue = slider.value();
+          var newValue = currentValue === 0 ? 100 : currentValue - 10;
+          slider.value(newValue);
+        }, interval);
+
+        var balanceInterval2 = setInterval(function() {
+          var currentValue = slider2.value();
+          var newValue = currentValue === 0 ? 100 : currentValue - 10;
+          slider2.value(newValue);
+        }, interval);
+      }
+function createChart() {
+            $("#chart").kendoChart({
+                title: {
+                    text: "Weight Distrubution Between right and left leg"
+                },
+                // dataSource: {
+                //     data: stats
+                // },
+                series: [
+                  {
+                  data:stats,
+                    type: "line",
+                    aggregate: "avg",
+                    field: "value",
+                    categoryField: "date",
+                },
+                  {
+                  data:stats2,
+                    type: "line",
+                    aggregate: "avg",
+                    field: "value",
+                    categoryField: "date"
+                }
+              ],
+              categoryAxis: {
+                title:{
+                  text:"Time (Minutes)"
+                },
+                    categories: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"],
+                    // Align the first two value axes to the left
+                    // and the last two to the right.
+                    //
+                    // Right alignment is done by specifying a
+                    // crossing value greater than or equal to
+                    // the number of categories.
+                    axisCrossingValues: [32, 32, 0],
+                    justified: true
+                },
+                valueAxis: {
+                title: {
+                text: "Force - (Kg)"
+                }}
+            });
+        }
+  createChart()
+  setTimeout(function () {
+    kendo.resize($(".k-chart"));
+    $("#weightChart2").data('kendoChart').refresh();
+  }, 350);
+
+  }
+
+  function onTileResize(e) {
+    // for widgets that do not auto resize
+    // https://docs.telerik.com/kendo-ui/styles-and-layout/using-kendo-in-responsive-web-pages
+    kendo.resize(e.container, true);
+    $("#weightChart2").data('kendoChart').refresh();
+  }
+
+
+  function resizeWidgets() {    
+    var charts = $(".k-chart");
+    charts.each((idx, elem) => $(elem).getKendoChart().resize());
+  }
+
+  $(document).ready(function () {
+    createWidgets()
+    resizeWidgets();
+    $(window).resize(function () {
+      kendo.resize($(".k-chart"));
+      resizeWidgets();
+    })
+  })
+</script>
+<style>
+  .k-card-title {
+    font-size: 20px;
+    line-height: 24px;
+    font-weight: 400;
+    color: #000000;
+  }
+
+  .sales {
+    color: #666666;
+  }
+
+  .k-menu-link{
+    font-size: 14px;
+  }
+
+  #performance-tilelayout .k-card-header {
+    border-style: none;
+  }
+
+  .k-tilelayout-item {
+    min-width: 220px;
+  }
+
+  @media (max-width: 780px) {
+    #performance-tilelayout div.k-tilelayout-item {
+      grid-column-end: span 6 !important;
+    }
+  }
+
+  @media only screen and (max-width: 600px) {
+    .k-card-body {
+      padding: 16px 0px;
+    }
+  }
+</style>
